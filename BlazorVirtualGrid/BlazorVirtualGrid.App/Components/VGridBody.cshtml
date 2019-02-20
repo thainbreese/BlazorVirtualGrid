@@ -34,9 +34,9 @@
     [CascadingParameter]
     protected GridService gridService { get; set; }
 
-    System.Reflection.PropertyInfo[] Properties = typeof(GridItem).GetProperties();
+    System.Reflection.PropertyInfo[] Properties = typeof(GridModel).GetProperties();
 
-    GridItem[] RenderingData;
+    GridModel[] RenderingData;
     protected override void OnInit()
     {
         base.OnInit();

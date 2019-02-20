@@ -8,16 +8,16 @@
     }
     else
     {
-        <div class="grid-table" tabindex="0" ref="Element" style="height: @(Height)px" 
+        <div class="grid-table" tabindex="0" ref="Grid" style="height: @(Height)px" 
             onmousemove="@OnMouseMove" 
             onmouseup="@OnMouseUp" 
             onmousewheel="@OnMouseWheel"
             onkeydown="@OnKeyDown">
             <CascadingValue Value=@gridService>
-                <GridHeader ref="GridHeader"></GridHeader>
-                <GridBody ref="GridBody"></GridBody>
-                <GridHScroll ref="GridHScroll"></GridHScroll>
-                <GridVScroll ref="GridVScroll"></GridVScroll>
+                <VGridHeader ref="GridHeader"></VGridHeader>
+                <VGridBody ref="GridBody"></VGridBody>
+                <VGridHScroll ref="GridHScroll"></VGridHScroll>
+                <VGridVScroll ref="GridVScroll"></VGridVScroll>
             </CascadingValue>
         </div>
     }
@@ -25,17 +25,15 @@
 </div>
 
 @functions {
-    [Parameter]
-    private GridItem[] Data { get; set; }
+    [Parameter] private GridModel[] Data { get; set; }
+    [Parameter] private int[] ColumnWidths { get; set; }
 
-    [Parameter]
-    private int[] ColumnWidths { get; set; }
 
-    ElementRef Element;
-    GridHeader GridHeader;
-    GridBody GridBody;
-    GridHScroll GridHScroll;
-    GridVScroll GridVScroll;
+    ElementRef Grid;
+    VGridHeader GridHeader;
+    VGridBody GridBody;
+    VGridHScroll GridHScroll;
+    VGridVScroll GridVScroll;
 
     GridService gridService;
 
@@ -61,8 +59,8 @@
     {
         if (!Rendered)
         {
-            Width = await Element.GetWidth();
-            Height = await Element.GetHeight();
+            Width = await Grid.GetWidth();
+            Height = await Grid.GetHeight();
             gridService.SetDimension(Width, Height);
             Rendered = true;
             StateHasChanged();
@@ -109,7 +107,6 @@
 
     void OnKeyDown(UIKeyboardEventArgs e)
     {
-        StateHasChanged();
         switch (e.Code)
         {
             case "ArrowUp":

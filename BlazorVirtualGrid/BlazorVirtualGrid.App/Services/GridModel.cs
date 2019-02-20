@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorVirtualGrid.App.Services
 {
-    public class GridItem
+    public class GridModel
     {
         public string ContactName { get; set; }
         public string CustomerID { get; set; }

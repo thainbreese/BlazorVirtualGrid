@@ -8,7 +8,7 @@ namespace BlazorVirtualGrid.App.Services
     public class GridService
     {
         public int[] ColumnWidths; // Width array of grid columns.
-        public GridItem[] Data; // Records data
+        public GridModel[] Data; // Records data
         public int TotalCount; // Total records count
 
         public int RowHeight; // Height of each row.
@@ -53,13 +53,13 @@ namespace BlazorVirtualGrid.App.Services
             ColumnWidths = new int[columnWidths.Length];
             Array.Copy(columnWidths, ColumnWidths, columnWidths.Length);
         }
-        public void SetData(GridItem[] data)
+        public void SetData(GridModel[] data)
         {
-            Data = new GridItem[data.Length];
+            Data = new GridModel[data.Length];
             Array.Copy(data, Data, data.Length);
             TotalCount = data.Count();
         }
-        public GridItem[] GetRenderingData()
+        public GridModel[] GetRenderingData()
         {
             return Data.Skip(StartRecord).Take(RowsCount).ToArray();
         }
@@ -133,7 +133,7 @@ namespace BlazorVirtualGrid.App.Services
         }
         public void CursorRight()
         {
-            if (SelectedColumn < typeof(GridItem).GetProperties().Count() - 1)
+            if (SelectedColumn < typeof(GridModel).GetProperties().Count() - 1)
             {
                 SelectedColumn++;
                 int RowXPoint = ColumnWidths.Take(SelectedColumn + 2).Sum();

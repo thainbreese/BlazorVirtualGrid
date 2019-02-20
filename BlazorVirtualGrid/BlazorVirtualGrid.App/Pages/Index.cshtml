@@ -10,7 +10,7 @@ else
 {
     <div class="row">
         <div class="col-md-6">
-            <Grid Data=@Data ColumnWidths=@ColumnWidths></Grid>
+            <VGrid Data=@Data ColumnWidths=@ColumnWidths />
         </div>
         <div class="col-md-6">
             <Grid Data=@Data ColumnWidths=@ColumnWidths></Grid>
@@ -20,12 +20,12 @@ else
 
 @functions {
 
-    GridItem[] Data;
+    GridModel[] Data;
     int[] ColumnWidths = { 35, 150, 150, 150, 150, 150 };
 
     protected override async Task OnInitAsync()
     {
-        Data = await Http.GetJsonAsync<GridItem[]>("sample-data/data.json");
+        Data = await Http.GetJsonAsync<GridModel[]>("sample-data/data.json");
         await base.OnInitAsync();
     }
 
