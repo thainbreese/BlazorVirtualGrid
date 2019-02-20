@@ -1,0 +1,49 @@
+﻿@using BlazorVirtualGrid.App.Services
+
+@if (gridService.IsHScrollbar())
+{
+    <div class="grid-hscroll">
+        <div class="grid-hscroll-wrapper">
+            <div class="grid-hscroll-track" ref="Track" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnThumbMove"></div>
+            <div class="grid-hscroll-left" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollLeft">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="grid-hscroll-right" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollRight">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="grid-hscroll-thumb" 
+                 style="width: @(gridService.GetHScrollbarThumbSize())px; 
+                        left: @(gridService.GetHScrollbarThumbPosition())px;
+                        @(gridService.HScrolling() ? "opacity: 1;height:100%;bottom:0": null)"
+                 onmousedown="@OnMouseDown"></div>
+        </div>
+    </div>
+}
+
+@functions {
+    [CascadingParameter]
+    protected GridService gridService { get; set; }
+
+    ElementRef Track;
+
+    void OnMouseDown(UIMouseEventArgs e)
+    {
+        gridService.HScrollStart((int)e.ClientX);
+    }
+
+    async void OnThumbMove(UIMouseEventArgs e)
+    {
+        int left = await Track.GetLeft();
+        gridService.HScrollMove((int)e.ClientX - left);
+    }
+
+    void OnScrollLeft()
+    {
+        gridService.HScrollLeft();
+    }
+
+    void OnScrollRight()
+    {
+        gridService.HScrollRight();
+    }
+}

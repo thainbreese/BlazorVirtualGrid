@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorVirtualGrid.Server", "BlazorVirtualGrid\BlazorVirtualGrid.Server\BlazorVirtualGrid.Server.csproj", "{84384D73-6C64-4FB5-8855-21D59AFC8489}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorVirtualGrid.App", "BlazorVirtualGrid\BlazorVirtualGrid.App\BlazorVirtualGrid.App.csproj", "{EFA0BFB6-5647-42C5-9DFE-39AB0B3CE1B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84384D73-6C64-4FB5-8855-21D59AFC8489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84384D73-6C64-4FB5-8855-21D59AFC8489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84384D73-6C64-4FB5-8855-21D59AFC8489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84384D73-6C64-4FB5-8855-21D59AFC8489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA0BFB6-5647-42C5-9DFE-39AB0B3CE1B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA0BFB6-5647-42C5-9DFE-39AB0B3CE1B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA0BFB6-5647-42C5-9DFE-39AB0B3CE1B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA0BFB6-5647-42C5-9DFE-39AB0B3CE1B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16F0A443-EFC6-4E6C-B293-BD5C4742C108}
+	EndGlobalSection
+EndGlobal

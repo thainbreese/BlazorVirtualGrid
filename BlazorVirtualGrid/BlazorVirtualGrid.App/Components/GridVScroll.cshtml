@@ -1,0 +1,46 @@
+﻿@using BlazorVirtualGrid.App.Services
+
+<div class="grid-vscroll">
+    <div class="grid-vscroll-wrapper">
+        <div class="grid-vscroll-track" ref="Track" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnThumbMove"></div>
+        <div class="grid-vscroll-up" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollUp">
+            <i class="fas fa-chevron-up"></i>
+        </div>
+        <div class="grid-vscroll-down" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollDown">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="grid-vscroll-thumb"
+             style="height: @(gridService.GetVScrollbarThumbSize())px;
+                    top: @(gridService.GetVScrollbarThumbPosition())px;
+                    @(gridService.VScrolling() ? "opacity: 1;width:100%;right:0": null)"
+             onmousedown="@OnMouseDown"></div>
+    </div>
+</div>
+
+@functions {
+    [CascadingParameter]
+    protected GridService gridService { get; set; }
+
+    ElementRef Track;
+
+    void OnMouseDown(UIMouseEventArgs e)
+    {
+        gridService.VScrollStart((int)e.ClientY);
+    }
+
+    async void OnThumbMove(UIMouseEventArgs e)
+    {
+        int top = await Track.GetTop();
+        gridService.VScrollMove((int)e.ClientY - top);
+    }
+
+    void OnScrollUp()
+    {
+        gridService.VScrollUp();
+    }
+
+    void OnScrollDown()
+    {
+        gridService.VScrollDown();
+    }
+}

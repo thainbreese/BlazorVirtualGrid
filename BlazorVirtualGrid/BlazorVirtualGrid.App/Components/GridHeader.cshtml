@@ -1,0 +1,29 @@
+﻿@using BlazorVirtualGrid.App.Services
+
+<div class="grid-header">
+    <div class="grid-header-item" style="min-width: @(gridService.ColumnWidths[0])px"></div>
+    @for (var i = 0; i < Properties.Count(); i ++)
+    {
+    <div class="grid-header-item" style="min-width: @(gridService.ColumnWidths[i+1])px; left: @(i > 0 ? gridService.GetTableLeftPosition() : 0 )px">
+        <div class="grid-item">
+            <span>@Properties[i].Name</span>
+        </div>
+        @if (i != Properties.Count() - 1)
+        {
+            var index = i + 1;
+            <div class="grid-header-resize" onmousedown="@(e => OnMouseDown(e, index))"></div>
+        }
+    </div>
+    }
+</div>
+
+@functions {
+    [CascadingParameter]
+    protected GridService gridService { get; set; }
+
+    System.Reflection.PropertyInfo[] Properties = typeof(GridItem).GetProperties();
+    void OnMouseDown(UIMouseEventArgs e, int index)
+    {
+        gridService.ResizeStart(index, (int)e.ClientX);
+    }
+}

@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject HttpClient Http
+@using BlazorVirtualGrid.App.Services
+
+@if (Data == null)
+{
+    <Loader></Loader>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <Grid Data=@Data ColumnWidths=@ColumnWidths></Grid>
+        </div>
+        <div class="col-md-6">
+            <Grid Data=@Data ColumnWidths=@ColumnWidths></Grid>
+        </div>
+    </div>
+}
+
+@functions {
+
+    GridItem[] Data;
+    int[] ColumnWidths = { 35, 150, 150, 150, 150, 150 };
+
+    protected override async Task OnInitAsync()
+    {
+        Data = await Http.GetJsonAsync<GridItem[]>("sample-data/data.json");
+        await base.OnInitAsync();
+    }
+
+}

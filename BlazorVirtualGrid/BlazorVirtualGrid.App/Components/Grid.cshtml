@@ -1,0 +1,129 @@
+﻿@using BlazorVirtualGrid.App.Services
+
+<div class="grid-container">
+    <div class="grid-wrapper">
+    @if (Data == null)
+    {
+        <Loader></Loader>
+    }
+    else
+    {
+        <div class="grid-table" tabindex="0" ref="Element" style="height: @(Height)px" 
+            onmousemove="@OnMouseMove" 
+            onmouseup="@OnMouseUp" 
+            onmousewheel="@OnMouseWheel"
+            onkeydown="@OnKeyDown">
+            <CascadingValue Value=@gridService>
+                <GridHeader ref="GridHeader"></GridHeader>
+                <GridBody ref="GridBody"></GridBody>
+                <GridHScroll ref="GridHScroll"></GridHScroll>
+                <GridVScroll ref="GridVScroll"></GridVScroll>
+            </CascadingValue>
+        </div>
+    }
+    </div>
+</div>
+
+@functions {
+    [Parameter]
+    private GridItem[] Data { get; set; }
+
+    [Parameter]
+    private int[] ColumnWidths { get; set; }
+
+    ElementRef Element;
+    GridHeader GridHeader;
+    GridBody GridBody;
+    GridHScroll GridHScroll;
+    GridVScroll GridVScroll;
+
+    GridService gridService;
+
+    int Width;
+    int Height;
+    bool Rendered = false;
+
+    protected override void OnInit()
+    {
+        gridService = new GridService();
+        base.OnInit();
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        gridService.SetColumnWidths(ColumnWidths);
+        gridService.SetData(Data);
+        base.OnParametersSet();
+    }
+
+    protected override async void OnAfterRender()
+    {
+        if (!Rendered)
+        {
+            Width = await Element.GetWidth();
+            Height = await Element.GetHeight();
+            gridService.SetDimension(Width, Height);
+            Rendered = true;
+            StateHasChanged();
+        }
+        base.OnAfterRender();
+    }
+
+    void OnMouseMove(UIMouseEventArgs e)
+    {
+        int clientX = (int)e.ClientX;
+        if (gridService.IsResizing)
+        {
+            gridService.Resize(clientX);
+        }
+        if (gridService.IsHScrolling)
+        {
+            gridService.HScroll(clientX);
+        }
+        if (gridService.IsVScrolling)
+        {
+            gridService.VScroll((int)e.ClientY);
+        }
+    }
+
+    void OnMouseUp()
+    {
+        gridService.IsResizing = false;
+        gridService.IsHScrolling = false;
+        gridService.IsVScrolling = false;
+    }
+
+    void OnMouseWheel(UIWheelEventArgs e)
+    {
+        int deltaY = (int)e.DeltaY;
+        if (e.ShiftKey)
+        {
+            gridService.HScrollByWheel(deltaY);
+        }
+        else
+        {
+            gridService.VScrollByWeel(deltaY);
+        }
+    }
+
+    void OnKeyDown(UIKeyboardEventArgs e)
+    {
+        StateHasChanged();
+        switch (e.Code)
+        {
+            case "ArrowUp":
+                gridService.CursorUp();
+                break;
+            case "ArrowDown":
+                gridService.CursorDown();
+                break;
+            case "ArrowLeft":
+                gridService.CursorLeft();
+                break;
+            case "ArrowRight":
+                gridService.CursorRight();
+                break;
+        }
+    }
+}

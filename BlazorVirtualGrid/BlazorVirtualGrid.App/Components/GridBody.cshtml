@@ -1,0 +1,55 @@
+﻿@using BlazorVirtualGrid.App.Services
+
+<div class="grid-body">
+    @if (RenderingData == null || RenderingData.Count() == 0)
+    {
+        <div>No data</div>
+    }
+    else
+    {
+        int selectedRow = gridService.SelectedRow;
+        int selectedColumn = gridService.SelectedColumn;
+        @for (var i = 0; i < RenderingData.Count(); i++)
+        {
+            int row = i;
+            <div class="grid-body-row @(selectedRow == gridService.StartRecord + row ? "selected" : null)" style="top: @(gridService.StartRecordOffset)px">
+                <div class="grid-body-item" style="min-width: @(gridService.ColumnWidths[0])px"></div>
+                @for (var j = 0; j < Properties.Count(); j++)
+                {
+                    int column = j;
+                    <div class="grid-body-item @(selectedRow == gridService.StartRecord + row && selectedColumn == column ? "selected" : null)" 
+                         style="min-width: @(gridService.ColumnWidths[j+1])px; left: @(j > 0 ? gridService.GetTableLeftPosition() : 0 )px"
+                         onclick="@(e => OnItemClick(e, row, column))">
+                        <div class="grid-item">
+                            <span>@Properties[j].GetValue(@RenderingData[i])</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@functions {
+    [CascadingParameter]
+    protected GridService gridService { get; set; }
+
+    System.Reflection.PropertyInfo[] Properties = typeof(GridItem).GetProperties();
+
+    GridItem[] RenderingData;
+    protected override void OnInit()
+    {
+        base.OnInit();
+    }
+
+    protected override void OnParametersSet()
+    {
+        RenderingData = gridService.GetRenderingData();
+        base.OnParametersSet();
+    }
+
+    void OnItemClick(UIMouseEventArgs e, int row, int column)
+    {
+        gridService.SelectItem(row, column);
+    }
+}
