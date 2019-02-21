@@ -13,8 +13,10 @@
             onmouseup="@OnMouseUp" 
             onmousewheel="@OnMouseWheel"
             onkeydown="@OnKeyDown">
-            <CascadingValue Value=@gridService>
-                <VGridHeader ref="GridHeader"></VGridHeader>
+            <CascadingValue Value=this>
+                <VGridHeader ref="GridHeader">
+                    @ChildContent
+                </VGridHeader>
                 <VGridBody ref="GridBody"></VGridBody>
                 <VGridHScroll ref="GridHScroll"></VGridHScroll>
                 <VGridVScroll ref="GridVScroll"></VGridVScroll>
@@ -25,17 +27,16 @@
 </div>
 
 @functions {
+    [Parameter] private RenderFragment ChildContent { get; set; }
     [Parameter] private GridModel[] Data { get; set; }
-    [Parameter] private int[] ColumnWidths { get; set; }
 
+    public GridService gridService;
 
     ElementRef Grid;
     VGridHeader GridHeader;
     VGridBody GridBody;
     VGridHScroll GridHScroll;
     VGridVScroll GridVScroll;
-
-    GridService gridService;
 
     int Width;
     int Height;
@@ -50,7 +51,6 @@
 
     protected override void OnParametersSet()
     {
-        gridService.SetColumnWidths(ColumnWidths);
         gridService.SetData(Data);
         base.OnParametersSet();
     }

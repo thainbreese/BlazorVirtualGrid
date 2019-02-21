@@ -7,7 +7,7 @@ namespace BlazorVirtualGrid.App.Services
 {
     public class GridService
     {
-        public int[] ColumnWidths; // Width array of grid columns.
+        public List<GridColumnProperty> Columns;
         public GridModel[] Data; // Records data
         public int TotalCount; // Total records count
 
@@ -32,8 +32,11 @@ namespace BlazorVirtualGrid.App.Services
         public int SelectedRow;
         public int SelectedColumn;
 
+        public int ColumnIndex = 0;
+
         public GridService()
         {
+            Columns = new List<GridColumnProperty>();
             StartRecord = 0;
             RowHeight = 31;
             HScrollService = new GridHScrollService();
@@ -46,13 +49,7 @@ namespace BlazorVirtualGrid.App.Services
         /// Table set
         /// </summary>
         /// <param name="data"></param>
-        /// 
-
-        public void SetColumnWidths(int[] columnWidths)
-        {
-            ColumnWidths = new int[columnWidths.Length];
-            Array.Copy(columnWidths, ColumnWidths, columnWidths.Length);
-        }
+        
         public void SetData(GridModel[] data)
         {
             Data = new GridModel[data.Length];
@@ -127,7 +124,7 @@ namespace BlazorVirtualGrid.App.Services
             if (SelectedColumn > 0)
             {
                 SelectedColumn--;
-                int RowXPoint = ColumnWidths.Skip(2).Take(SelectedColumn - 1).Sum();
+                int RowXPoint = Columns.Skip(2).Take(SelectedColumn - 1).Select(c => c.Width).Sum();
                 HScrollService.ScrollLeft(RowXPoint);
             }
         }
@@ -136,7 +133,7 @@ namespace BlazorVirtualGrid.App.Services
             if (SelectedColumn < typeof(GridModel).GetProperties().Count() - 1)
             {
                 SelectedColumn++;
-                int RowXPoint = ColumnWidths.Take(SelectedColumn + 2).Sum();
+                int RowXPoint = Columns.Take(SelectedColumn + 2).Select(c => c.Width).Sum();
                 if (RowXPoint > Width)
                 {
                     HScrollService.ScrollTo(RowXPoint - Width);
@@ -157,7 +154,7 @@ namespace BlazorVirtualGrid.App.Services
         }
         public void SetHScroll()
         {
-            int totalWidth = ColumnWidths.Sum();
+            int totalWidth = Columns.Select(c => c.Width).Sum();
             HScrollService.SetHScrollbar(Width, totalWidth);
         }
         public int GetHScrollbarThumbSize()
@@ -267,14 +264,14 @@ namespace BlazorVirtualGrid.App.Services
         public void ResizeStart(int column, int clientX)
         {
             ResizingColumn = column;
-            ResizingOffset = ColumnWidths[column] - clientX;
+            ResizingOffset = Columns[column].Width - clientX;
             IsResizing = true;
         }
 
         public void Resize(int clientX)
         {
             int newWidth = Math.Max(ResizingOffset + clientX, 35);
-            ColumnWidths[ResizingColumn] = newWidth;
+            Columns[ResizingColumn].Width = newWidth;
             SetHScroll();
         }
 

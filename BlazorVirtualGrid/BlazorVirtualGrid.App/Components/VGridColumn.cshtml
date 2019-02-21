@@ -1,7 +1,73 @@
-﻿
+﻿@using BlazorVirtualGrid.App.Services
+
+<div class="grid-header-item @fixedClass" style="min-width: @(realWidth)px; left: @(tableLeftPosition)px">
+    <div class="grid-item">
+        <span>@Field</span>
+    </div>
+    <div class="grid-header-resize" onmousedown="@(e => OnMouseDown(e, ColumnIndex))"></div>
+</div>
 
 @functions {
-
+    [CascadingParameter] VGrid ContainerGrid { get; set; }
     [Parameter] private string Field { get; set; }
+    [Parameter] private int Width { get; set; }
+    [Parameter] private bool StickToLeft { get; set; } = false;
+    [Parameter] private bool StickToRight { get; set; } = false;
 
+    GridService gridService;
+
+    string fixedClass
+    {
+        get
+        {
+            if (StickToLeft)
+                return "stick-left";
+            if (StickToRight)
+                return "stick-right";
+            return null;
+        }
+    }
+
+    int tableLeftPosition
+    {
+        get
+        {
+            if (StickToLeft)
+                return 0;
+            return gridService.GetTableLeftPosition();
+        }
+    }
+    int realWidth
+    {
+        get
+        {
+            return gridService.Columns.ElementAtOrDefault(ColumnIndex).Width;
+        }
+    }
+    int ColumnIndex = -1;
+    protected override void OnInit()
+    {
+        gridService = ContainerGrid.gridService;
+        gridService.ColumnIndex++;
+        ColumnIndex = gridService.ColumnIndex;
+        base.OnInit();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (gridService.Columns.Count() == gridService.ColumnIndex)
+        {
+            gridService.Columns.Add(new GridColumnProperty {
+                Width = Width,
+                StickToLeft = StickToLeft,
+                Field = Field
+            });
+        }
+        base.OnParametersSet();
+    }
+
+    void OnMouseDown(UIMouseEventArgs e, int columnIndex)
+    {
+        gridService.ResizeStart(columnIndex, (int)e.ClientX);
+    }
 }

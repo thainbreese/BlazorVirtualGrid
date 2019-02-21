@@ -4,27 +4,62 @@
 {
     <div class="grid-hscroll">
         <div class="grid-hscroll-wrapper">
-            <div class="grid-hscroll-track" ref="Track" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnThumbMove"></div>
-            <div class="grid-hscroll-left" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollLeft">
+            <div class="grid-hscroll-track @showClass" ref="Track" onmousedown="@OnThumbMove"></div>
+            <div class="grid-hscroll-left @showClass" onmousedown="@OnScrollLeft">
                 <i class="fas fa-chevron-left"></i>
             </div>
-            <div class="grid-hscroll-right" style=@(gridService.HScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollRight">
+            <div class="grid-hscroll-right @showClass" onmousedown="@OnScrollRight">
                 <i class="fas fa-chevron-right"></i>
             </div>
-            <div class="grid-hscroll-thumb" 
-                 style="width: @(gridService.GetHScrollbarThumbSize())px; 
-                        left: @(gridService.GetHScrollbarThumbPosition())px;
-                        @(gridService.HScrolling() ? "opacity: 1;height:100%;bottom:0": null)"
+            <div class="grid-hscroll-thumb @showClass" 
+                 style="width: @(thumbSize)px; 
+                        left: @(thumbPosition)px;
+                        @(gridService.HScrolling() ? "height:100%;bottom:0": null)"
                  onmousedown="@OnMouseDown"></div>
         </div>
     </div>
 }
 
 @functions {
-    [CascadingParameter]
-    protected GridService gridService { get; set; }
+    [CascadingParameter] VGrid ContainerGrid { get; set; }
+
+    GridService gridService;
 
     ElementRef Track;
+
+    string showClass
+    {
+        get
+        {
+            if (gridService.HScrolling())
+            {
+                return "show";
+            }
+            return null;
+        }
+    }
+
+    int thumbSize
+    {
+        get
+        {
+            return gridService.GetHScrollbarThumbSize();
+        }
+    }
+
+    int thumbPosition
+    {
+        get
+        {
+            return gridService.GetHScrollbarThumbPosition();
+        }
+    }
+
+    protected override void OnInit()
+    {
+        gridService = ContainerGrid.gridService;
+        base.OnInit();
+    }
 
     void OnMouseDown(UIMouseEventArgs e)
     {

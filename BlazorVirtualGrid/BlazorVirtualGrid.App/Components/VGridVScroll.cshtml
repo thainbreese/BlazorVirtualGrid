@@ -2,26 +2,57 @@
 
 <div class="grid-vscroll">
     <div class="grid-vscroll-wrapper">
-        <div class="grid-vscroll-track" ref="Track" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnThumbMove"></div>
-        <div class="grid-vscroll-up" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollUp">
+        <div class="grid-vscroll-track @showClass" ref="Track" onmousedown="@OnThumbMove"></div>
+        <div class="grid-vscroll-up @showClass" onmousedown="@OnScrollUp">
             <i class="fas fa-chevron-up"></i>
         </div>
-        <div class="grid-vscroll-down" style=@(gridService.VScrolling() ? "opacity: 1;": null) onmousedown="@OnScrollDown">
+        <div class="grid-vscroll-down @showClass" onmousedown="@OnScrollDown">
             <i class="fas fa-chevron-down"></i>
         </div>
-        <div class="grid-vscroll-thumb"
-             style="height: @(gridService.GetVScrollbarThumbSize())px;
-                    top: @(gridService.GetVScrollbarThumbPosition())px;
-                    @(gridService.VScrolling() ? "opacity: 1;width:100%;right:0": null)"
+        <div class="grid-vscroll-thumb @showClass"
+             style="height: @(thumbSize)px;
+                    top: @(thumbPosition)px;
+                    @(gridService.VScrolling() ? "width:100%;right:0": null)"
              onmousedown="@OnMouseDown"></div>
     </div>
 </div>
 
 @functions {
-    [CascadingParameter]
-    protected GridService gridService { get; set; }
+    [CascadingParameter] VGrid ContainerGrid { get; set; }
+
+    GridService gridService { get; set; }
 
     ElementRef Track;
+
+    string showClass
+    {
+        get
+        {
+            return gridService.VScrolling() ? "show" : null;
+        }
+    }
+
+    int thumbSize
+    {
+        get
+        {
+            return gridService.GetVScrollbarThumbSize();
+        }
+    }
+
+    int thumbPosition
+    {
+        get
+        {
+            return gridService.GetVScrollbarThumbPosition();
+        }
+    }
+
+    protected override void OnInit()
+    {
+        gridService = ContainerGrid.gridService;
+        base.OnInit();
+    }
 
     void OnMouseDown(UIMouseEventArgs e)
     {

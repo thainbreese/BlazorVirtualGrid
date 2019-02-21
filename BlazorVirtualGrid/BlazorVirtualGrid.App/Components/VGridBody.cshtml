@@ -7,21 +7,19 @@
     }
     else
     {
-        int selectedRow = gridService.SelectedRow;
-        int selectedColumn = gridService.SelectedColumn;
         @for (var i = 0; i < RenderingData.Count(); i++)
         {
             int row = i;
-            <div class="grid-body-row @(selectedRow == gridService.StartRecord + row ? "selected" : null)" style="top: @(gridService.StartRecordOffset)px">
-                <div class="grid-body-item" style="min-width: @(gridService.ColumnWidths[0])px"></div>
-                @for (var j = 0; j < Properties.Count(); j++)
+            <div class="grid-body-row @rowSelectedClass(row)" style="top: @(gridService.StartRecordOffset)px">
+                <div class="grid-body-item" style="min-width: @(columnWidth(0))px"></div>
+                @for (var j = 1; j < gridService.Columns.Count(); j++)
                 {
                     int column = j;
-                    <div class="grid-body-item @(selectedRow == gridService.StartRecord + row && selectedColumn == column ? "selected" : null)" 
-                         style="min-width: @(gridService.ColumnWidths[j+1])px; left: @(j > 0 ? gridService.GetTableLeftPosition() : 0 )px"
-                         onclick="@(e => OnItemClick(e, row, column))">
+                    <div class="grid-body-item @selectedClass(row, column-1) @fixedClass(column)" 
+                         style="min-width: @(columnWidth(column))px; left: @(tableLeftPosition(column))px"
+                         onclick="@(e => OnItemClick(e, row, column-1))">
                         <div class="grid-item">
-                            <span>@Properties[j].GetValue(@RenderingData[i])</span>
+                            <span>@rowItem(row, column)</span>
                         </div>
                     </div>
                 }
@@ -31,14 +29,51 @@
 </div>
 
 @functions {
-    [CascadingParameter]
-    protected GridService gridService { get; set; }
+    [CascadingParameter] VGrid ContainerGrid { get; set; }
 
-    System.Reflection.PropertyInfo[] Properties = typeof(GridModel).GetProperties();
+    GridService gridService { get; set; }
 
     GridModel[] RenderingData;
+
+    string fixedClass(int column)
+    {
+        if (gridService.Columns[column].StickToLeft)
+            return "stick-left";
+        if (gridService.Columns[column].StickToRight)
+            return "stick-right";
+        return null;
+    }
+
+    string rowItem(int row, int column)
+    {
+        return RenderingData[row].GetType().GetProperty(gridService.Columns[column].Field).GetValue(RenderingData[row]).ToString();
+    }
+
+    string rowSelectedClass(int row)
+    {
+        return gridService.SelectedRow == gridService.StartRecord + row ? "selected" : null;
+    }
+
+    string selectedClass(int row, int column)
+    {
+        return (gridService.SelectedRow == gridService.StartRecord + row && gridService.SelectedColumn == column) ? "selected" : null;
+    }
+
+    int tableLeftPosition(int column)
+    {
+        if (gridService.Columns[column].StickToLeft)
+            return 0;
+        return gridService.GetTableLeftPosition();
+    }
+
+    int columnWidth(int column)
+    {
+        return gridService.Columns[column].Width;
+    }
+
     protected override void OnInit()
     {
+        gridService = ContainerGrid.gridService;
         base.OnInit();
     }
 

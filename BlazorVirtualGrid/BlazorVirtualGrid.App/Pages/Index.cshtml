@@ -10,10 +10,15 @@ else
 {
     <div class="row">
         <div class="col-md-6">
-            <VGrid Data=@Data ColumnWidths=@ColumnWidths />
+            <VGrid Data=@Data>
+                <VGridColumn Field="@nameof(GridModel.ContactName)" Width=150 StickToLeft=true></VGridColumn>
+                <VGridColumn Field="@nameof(GridModel.CustomerID)" Width=150 StickToLeft=true></VGridColumn>
+                <VGridColumn Field="@nameof(GridModel.CompanyName)" Width=150></VGridColumn>
+                <VGridColumn Field="@nameof(GridModel.ContactTitle)" Width=150></VGridColumn>
+                <VGridColumn Field="@nameof(GridModel.Address)" Width=150></VGridColumn>
+            </VGrid>
         </div>
         <div class="col-md-6">
-            <Grid Data=@Data ColumnWidths=@ColumnWidths></Grid>
         </div>
     </div>
 }
@@ -21,7 +26,6 @@ else
 @functions {
 
     GridModel[] Data;
-    int[] ColumnWidths = { 35, 150, 150, 150, 150, 150 };
 
     protected override async Task OnInitAsync()
     {
